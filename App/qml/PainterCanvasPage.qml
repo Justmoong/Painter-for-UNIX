@@ -49,17 +49,33 @@ Kirigami.Page {
         drawingSurface.saveToFile(fileUrl)
     }
 
+    function openImage(fileUrl) {
+        drawingSurface.loadImage(fileUrl)
+    }
+
     header: CanvasToolBar {
-        drawer: window.globalDrawer
+        id: canvasToolBar
         brushSize: painterPage.brushSize
         currentColor: painterPage.brushColor
         currentTool: painterPage.toolMode
         palette: painterPage.palette
         onNewCanvasRequested: painterPage.newCanvas()
         onClearCanvasRequested: painterPage.clearCanvas()
-        onBrushSizeChangeRequested: painterPage.brushSize = size
-        onColorPicked: painterPage.setBrushColor(swatchColor)
-        onToolSelected: painterPage.toolMode = tool
+        onBrushSizeChangeRequested: function(size) {
+            painterPage.brushSize = size
+        }
+        onColorPicked: function(swatchColor) {
+            painterPage.setBrushColor(swatchColor)
+        }
+        onToolSelected: function(tool) {
+            painterPage.toolMode = tool
+        }
+        onSaveRequested: function(fileUrl) {
+            painterPage.saveCanvasAs(fileUrl)
+        }
+        onOpenRequested: function(fileUrl) {
+            painterPage.openImage(fileUrl)
+        }
     }
 
     ColumnLayout {
@@ -81,5 +97,16 @@ Kirigami.Page {
                 onBrushDeltaRequested: painterPage.adjustBrush(delta)
             }
         }
+    }
+
+    Controls.ToolButton {
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        anchors.margins: Kirigami.Units.largeSpacing
+        icon.name: "application-menu"
+        display: Controls.AbstractButton.IconOnly
+        visible: canvasToolBar.globalDrawer !== null
+        Accessible.name: qsTr("Open menu")
+        onClicked: if (canvasToolBar.globalDrawer) canvasToolBar.globalDrawer.open()
     }
 }

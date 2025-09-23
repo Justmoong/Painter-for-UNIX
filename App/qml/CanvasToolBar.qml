@@ -1,6 +1,7 @@
 import QtQuick
-import QtQuick.Layouts
 import QtQuick.Controls as Controls
+import QtQuick.Dialogs as Dialogs
+import QtQuick.Layouts
 import org.kde.kirigami 2.20 as Kirigami
 
 Controls.ToolBar {
@@ -9,33 +10,117 @@ Controls.ToolBar {
     property real brushSize: 4
     property color currentColor: "#1a1a1a"
     property var palette: []
-    property var drawer: null
     property string currentTool: "brush"
 
     signal newCanvasRequested()
     signal clearCanvasRequested()
+    signal openRequested(string fileUrl)
+    signal saveRequested(string fileUrl)
     signal brushSizeChangeRequested(real size)
     signal colorPicked(color swatchColor)
     signal toolSelected(string tool)
+
+    property alias globalDrawer: drawer
+
+    function openFileDialog() { openDialog.open() }
+    function openSaveDialog() { saveDialog.open() }
+
+    Dialogs.FileDialog {
+        id: openDialog
+        title: qsTr("Open Image")
+        fileMode: Dialogs.FileDialog.OpenFile
+        nameFilters: [qsTr("Images (*.png *.jpg *.jpeg *.bmp *.gif)")]
+        onAccepted: {
+            const selected = openDialog.selectedFile || openDialog.fileUrl
+            const urlString = selected ? selected.toString() : ""
+            if (urlString.length) {
+                toolbar.openRequested(urlString)
+            }
+        }
+    }
+
+    Dialogs.FileDialog {
+        id: saveDialog
+        title: qsTr("Save Image As")
+        fileMode: Dialogs.FileDialog.SaveFile
+        nameFilters: [
+            qsTr("PNG Image (*.png)"),
+            qsTr("JPEG Image (*.jpg *.jpeg)"),
+            qsTr("Bitmap Image (*.bmp)")
+        ]
+        onAccepted: {
+            const selected = saveDialog.selectedFile || saveDialog.fileUrl
+            var urlString = selected ? selected.toString() : ""
+            if (!urlString.length) {
+                return
+            }
+
+            if (!urlString.includes('.')) {
+                if (urlString.endsWith('/')) {
+                    urlString += 'canvas'
+                }
+                const suffix = saveDialog.selectedNameFilter.toLowerCase()
+                if (suffix.indexOf('jpeg') !== -1 || suffix.indexOf('jpg') !== -1) {
+                    urlString += '.jpg'
+                } else if (suffix.indexOf('bmp') !== -1) {
+                    urlString += '.bmp'
+                } else {
+                    urlString += '.png'
+                }
+            }
+
+            toolbar.saveRequested(urlString)
+        }
+    }
+
+    Kirigami.GlobalDrawer {
+        id: drawer
+        parent: toolbar.window
+        title: qsTr("Painter for UNIX")
+        titleIcon: "document-edit"
+        actions: [
+            Kirigami.Action {
+                text: qsTr("New Canvas")
+                icon.name: "document-new"
+                onTriggered: toolbar.newCanvasRequested()
+            },
+            Kirigami.Action {
+                text: qsTr("Clear Canvas")
+                icon.name: "edit-clear"
+                onTriggered: toolbar.clearCanvasRequested()
+            },
+            Kirigami.Action {
+                text: qsTr("Open...")
+                icon.name: "document-open"
+                onTriggered: toolbar.openFileDialog()
+            },
+            Kirigami.Action {
+                text: qsTr("Save As...")
+                icon.name: "document-save-as"
+                onTriggered: toolbar.openSaveDialog()
+            }
+        ]
+    }
 
     contentItem: RowLayout {
         spacing: Kirigami.Units.mediumSpacing
 
         Controls.ToolButton {
-            icon.name: "application-menu"
-            display: Controls.AbstractButton.IconOnly
-            Accessible.name: qsTr("Application menu")
-            onClicked: {
-                if (toolbar.drawer) {
-                    toolbar.drawer.open()
-                }
-            }
-        }
-
-        Controls.ToolButton {
             text: qsTr("New")
             icon.name: "document-new"
             onClicked: toolbar.newCanvasRequested()
+        }
+
+        Controls.ToolButton {
+            text: qsTr("Open")
+            icon.name: "document-open"
+            onClicked: toolbar.openFileDialog()
+        }
+
+        Controls.ToolButton {
+            text: qsTr("Save")
+            icon.name: "document-save"
+            onClicked: toolbar.openSaveDialog()
         }
 
         Controls.ToolButton {
