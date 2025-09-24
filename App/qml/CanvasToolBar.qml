@@ -20,8 +20,6 @@ Controls.ToolBar {
     signal colorPicked(color swatchColor)
     signal toolSelected(string tool)
 
-    property alias globalDrawer: drawer
-
     function openFileDialog() { openDialog.open() }
     function openSaveDialog() { saveDialog.open() }
 
@@ -71,35 +69,6 @@ Controls.ToolBar {
 
             toolbar.saveRequested(urlString)
         }
-    }
-
-    Kirigami.GlobalDrawer {
-        id: drawer
-        parent: toolbar.window
-        title: qsTr("Painter for UNIX")
-        titleIcon: "document-edit"
-        actions: [
-            Kirigami.Action {
-                text: qsTr("New Canvas")
-                icon.name: "document-new"
-                onTriggered: toolbar.newCanvasRequested()
-            },
-            Kirigami.Action {
-                text: qsTr("Clear Canvas")
-                icon.name: "edit-clear"
-                onTriggered: toolbar.clearCanvasRequested()
-            },
-            Kirigami.Action {
-                text: qsTr("Open...")
-                icon.name: "document-open"
-                onTriggered: toolbar.openFileDialog()
-            },
-            Kirigami.Action {
-                text: qsTr("Save As...")
-                icon.name: "document-save-as"
-                onTriggered: toolbar.openSaveDialog()
-            }
-        ]
     }
 
     contentItem: RowLayout {

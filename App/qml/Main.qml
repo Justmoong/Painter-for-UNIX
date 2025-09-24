@@ -9,6 +9,7 @@ Kirigami.ApplicationWindow {
     visible: true
     title: qsTr("Painter for UNIX")
 
+    pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.None
 
     property var canvasPage: null
 
