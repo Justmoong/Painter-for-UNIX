@@ -21,7 +21,7 @@ Kirigami.Page {
     ]
 
     property color brushColor: defaultPalette[0].color
-    property real brushSize: 6
+    property real brushSize: 2
     property var palette: defaultPalette
     property string toolMode: "brush"
 

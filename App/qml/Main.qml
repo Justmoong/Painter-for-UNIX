@@ -4,8 +4,8 @@ import "."
 
 Kirigami.ApplicationWindow {
     id: window
-    width: 960
-    height: 640
+    width: 1080
+    height: 720
     visible: true
     title: qsTr("Painter for UNIX")
 

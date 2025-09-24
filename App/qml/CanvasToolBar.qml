@@ -7,7 +7,7 @@ import org.kde.kirigami 2.20 as Kirigami
 Controls.ToolBar {
     id: toolbar
 
-    property real brushSize: 4
+    property real brushSize: 2
     property color currentColor: "#1a1a1a"
     property var palette: []
     property string currentTool: "brush"
@@ -155,22 +155,24 @@ Controls.ToolBar {
             Controls.ToolButton {
                 icon.name: "zoom-in"
                 display: Controls.AbstractButton.IconOnly
-                onClicked: toolbar.brushSizeChangeRequested(Math.min(48, toolbar.brushSize + 2))
+                onClicked: toolbar.brushSizeChangeRequested(Math.min(48, toolbar.brushSize + 1))
                 Accessible.name: qsTr("Increase brush size")
             }
 
             Controls.ToolButton {
                 icon.name: "zoom-out"
                 display: Controls.AbstractButton.IconOnly
-                onClicked: toolbar.brushSizeChangeRequested(Math.max(1, toolbar.brushSize - 2))
+                onClicked: toolbar.brushSizeChangeRequested(Math.max(1, toolbar.brushSize - 1))
                 Accessible.name: qsTr("Decrease brush size")
             }
         }
 
         Controls.Label {
             text: qsTr("%1 px").arg(Math.round(toolbar.brushSize))
-            width: 60
+            width: 120
         }
+
+        Item { Layout.fillWidth: true } //For Fixed Layout
 
         Repeater {
             model: toolbar.palette
@@ -203,6 +205,6 @@ Controls.ToolBar {
                 }
             }
         }
-        Item { Layout.fillWidth: true } //For Fixed Layout
+
     }
 }

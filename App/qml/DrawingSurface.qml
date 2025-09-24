@@ -8,7 +8,7 @@ Rectangle {
     border.width: 1
 
     property color brushColor: "#1a1a1a"
-    property real brushSize: 6
+    property real brushSize: 2
     property var strokes: []
     property var currentStroke: null
     property string toolMode: "brush"
