@@ -203,5 +203,6 @@ Controls.ToolBar {
                 }
             }
         }
+        Item { Layout.fillWidth: true } //For Fixed Layout
     }
 }
