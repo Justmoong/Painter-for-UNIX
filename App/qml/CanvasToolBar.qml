@@ -3,6 +3,8 @@ import QtQuick.Controls as Controls
 import QtQuick.Dialogs as Dialogs
 import QtQuick.Layouts
 import org.kde.kirigami 2.20 as Kirigami
+import org.kde.ksvg as KSvg
+
 
 Controls.ToolBar {
     id: toolbar
@@ -75,27 +77,103 @@ Controls.ToolBar {
         spacing: Kirigami.Units.mediumSpacing
 
         Controls.ToolButton {
+            id: newButton
+            readonly property int actionIconSize: Kirigami.Units.iconSizes.smallMedium
+
             text: qsTr("New")
-            icon.name: "document-new"
+            Accessible.name: text
             onClicked: toolbar.newCanvasRequested()
+
+            contentItem: RowLayout {
+                spacing: Kirigami.Units.smallSpacing
+
+                KSvg.SvgItem {
+                    implicitWidth: newButton.actionIconSize
+                    implicitHeight: newButton.actionIconSize
+                    imagePath: "qrc:/../resources/icons/new.svg"
+                }
+
+                Controls.Label {
+                    text: newButton.text
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
         }
 
         Controls.ToolButton {
+            id: openButton
+            readonly property int actionIconSize: Kirigami.Units.iconSizes.smallMedium
+
             text: qsTr("Open")
-            icon.name: "document-open"
+            Accessible.name: text
             onClicked: toolbar.openFileDialog()
+
+            contentItem: RowLayout {
+                spacing: Kirigami.Units.smallSpacing
+
+                KSvg.SvgItem {
+                    implicitWidth: openButton.actionIconSize
+                    implicitHeight: openButton.actionIconSize
+                    imagePath: "qrc:/../resources/icons/open.svg"
+                }
+
+                Controls.Label {
+                    text: openButton.text
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
         }
 
         Controls.ToolButton {
+            id: saveButton
+            readonly property int actionIconSize: Kirigami.Units.iconSizes.smallMedium
+
             text: qsTr("Save")
-            icon.name: "document-save"
+            Accessible.name: text
             onClicked: toolbar.openSaveDialog()
+
+            contentItem: RowLayout {
+                spacing: Kirigami.Units.smallSpacing
+
+                KSvg.SvgItem {
+                    implicitWidth: saveButton.actionIconSize
+                    implicitHeight: saveButton.actionIconSize
+                    imagePath: "qrc:/../resources/icons/save.svg"
+                }
+
+                Controls.Label {
+                    text: saveButton.text
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
         }
 
         Controls.ToolButton {
+            id: clearButton
+            readonly property int actionIconSize: Kirigami.Units.iconSizes.smallMedium
+
             text: qsTr("Clear")
-            icon.name: "edit-clear"
+            Accessible.name: text
             onClicked: toolbar.clearCanvasRequested()
+
+            contentItem: RowLayout {
+                spacing: Kirigami.Units.smallSpacing
+
+                KSvg.SvgItem {
+                    implicitWidth: clearButton.actionIconSize
+                    implicitHeight: clearButton.actionIconSize
+                    imagePath: "qrc:/../resources/icons/clear.svg"
+                }
+
+                Controls.Label {
+                    text: clearButton.text
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                }
+            }
         }
 
         Kirigami.Separator {
@@ -107,21 +185,35 @@ Controls.ToolBar {
             spacing: Kirigami.Units.smallSpacing
 
             Controls.ToolButton {
-                icon.name: "draw-brush"
+                readonly property int toolIconSize: Kirigami.Units.iconSizes.smallMedium
+
                 checkable: true
                 checked: toolbar.currentTool === "brush"
                 display: Controls.AbstractButton.IconOnly
                 Accessible.name: qsTr("Brush tool")
                 onClicked: toolbar.toolSelected("brush")
+
+                contentItem: KSvg.SvgItem {
+                    implicitWidth: parent.toolIconSize
+                    implicitHeight: parent.toolIconSize
+                    imagePath: "qrc:/../resources/icons/brush.svg"
+                }
             }
 
             Controls.ToolButton {
-                icon.name: "draw-eraser"
+                readonly property int toolIconSize: Kirigami.Units.iconSizes.smallMedium
+
                 checkable: true
                 checked: toolbar.currentTool === "eraser"
                 display: Controls.AbstractButton.IconOnly
                 Accessible.name: qsTr("Eraser tool")
                 onClicked: toolbar.toolSelected("eraser")
+
+                contentItem: KSvg.SvgItem {
+                    implicitWidth: parent.toolIconSize
+                    implicitHeight: parent.toolIconSize
+                    imagePath: "qrc:/../resources/icons/eraser.svg"
+                }
             }
         }
 

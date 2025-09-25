@@ -19,14 +19,23 @@ if(APPLE)
     set(OPENGL_INCLUDE_DIR "" CACHE PATH "" FORCE)
 endif()
 
-find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Quick QuickControls2)
-find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS Kirigami I18n)
+find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS
+        Quick
+        QuickControls2)
+find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
+        Kirigami
+        I18n
+        svg)
 find_package(KF6KirigamiPlatform ${KF_MIN_VERSION} REQUIRED)
 
 qt_standard_project_setup(REQUIRES ${QT_MIN_VERSION})
 
 qt_add_executable(Vincent
         main.cpp
+)
+
+target_sources (Vincent PRIVATE
+        resources.qrc
 )
 
 qt_add_qml_module(Vincent

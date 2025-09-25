@@ -1,6 +1,6 @@
-# PainterForUNIX Application Structure
+# Vincent Application Structure
 
-This document captures the current architecture of PainterForUNIX as observed in the repository. It describes how the project is laid out, how the build system is wired, and how the runtime pieces cooperate to deliver the painting experience.
+This document captures the current architecture of Vincent as observed in the repository. It describes how the project is laid out, how the build system is wired, and how the runtime pieces cooperate to deliver the painting experience.
 
 ## Top-Level Layout
 
@@ -16,8 +16,8 @@ The project relies on KDE's Extra CMake Modules (ECM) paired with Qt 6 and KDE F
 
 1. The root `CMakeLists.txt` ensures Craft-provided prefixes take priority when `CRAFTROOT` is set. It then configures ECM, KDE install paths, and compiler settings before adding the `App/` subdirectory.
 2. `App/CMakeLists.txt` locates the runtime dependencies: `Qt6::Quick`, `Qt6::QuickControls2`, `KF6::Kirigami2`, `KF6::I18n`, and `KF6::KirigamiPlatform`.
-3. A single executable target, `painterforunix`, is defined around `App/main.cpp`.
-4. `qt_add_qml_module` registers the `PainterForUNIX` QML module version 1.0, exposing the components under `App/qml/` to the QML engine at runtime.
+3. A single executable target, `Vincent`, is defined around `App/main.cpp`.
+4. `qt_add_qml_module` registers the `Vincent` QML module version 1.0, exposing the components under `App/qml/` to the QML engine at runtime.
 5. macOS-specific blocks adjust OpenGL discovery so Qt Quick works even when SDK headers are missing from the default search paths.
 6. The executable links privately against the Qt/KF targets and is installed via the standard KDE install macro set.
 
@@ -26,7 +26,7 @@ The project relies on KDE's Extra CMake Modules (ECM) paired with Qt 6 and KDE F
 - Creates the `QGuiApplication` instance that hosts the Qt Quick scene graph.
 - Configures a `QQmlApplicationEngine` and augments its import paths when `CRAFTROOT` exposes prebuilt QML modules.
 - Connects `objectCreationFailed` to `QCoreApplication::exit(-1)` for fail-fast behavior if the QML scene cannot load.
-- Loads the `PainterForUNIX` QML module's `Main` component and starts the event loop.
+- Loads the `Vincent` QML module's `Main` component and starts the event loop.
 
 No additional C++ types or singletons are registered; all UI and interaction logic lives in QML.
 
@@ -66,7 +66,7 @@ No additional C++ types or singletons are registered; all UI and interaction log
 
 ## Data Flow & Interaction Summary
 
-1. The C++ entry point loads `PainterForUNIX.Main` and hands off control to QML.
+1. The C++ entry point loads `Vincent.Main` and hands off control to QML.
 2. `Main.qml` instantiates `PainterCanvasPage`, which centralizes application state and owns the drawing surface.
 3. `CanvasToolBar` surfaces user actions. Signals propagate up to `PainterCanvasPage` methods, which then mutate page state or invoke `DrawingSurface` methods.
 4. `DrawingSurface` tracks strokes and encodes them into the Qt Quick `Canvas`. Brush parameters flow from the page to the surface, ensuring interactive updates.

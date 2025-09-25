@@ -2,6 +2,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
+extern "C" void mac_unifyTitlebar(QWindow *qw);
+
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
