@@ -7,7 +7,7 @@ Kirigami.ApplicationWindow {
     width: 1080
     height: 720
     visible: true
-    title: qsTr("Painter for UNIX")
+    title: qsTr("Vincent")
 
     pageStack.globalToolBar.style: Kirigami.ApplicationHeaderStyle.None
 

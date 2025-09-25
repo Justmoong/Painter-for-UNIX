@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         &app,
         []() { QCoreApplication::exit(-1); },
         Qt::QueuedConnection);
-    engine.loadFromModule("PainterForUNIX", "Main");
+    engine.loadFromModule("Vincent", "Main");
 
     return app.exec();
 }

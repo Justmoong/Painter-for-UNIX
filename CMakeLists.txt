@@ -21,7 +21,7 @@ if(DEFINED ENV{CRAFTROOT})
     unset(_craft_prefix)
 endif()
 
-project(PainterForUNIX VERSION 0.1 LANGUAGES CXX)
+project(Vincent VERSION 0.1 LANGUAGES CXX)
 
 set(QT_MIN_VERSION "6.8.0")
 set(KF_MIN_VERSION "6.2.0")
@@ -37,3 +37,10 @@ include(FeatureSummary)
 add_subdirectory(App)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
+set(_APP_ICNS "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.icns")
+set_source_files_properties("${_APP_ICNS}" PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+target_sources(Vincent PRIVATE "${_APP_ICNS}")
+set_target_properties(Vincent PROPERTIES
+        MACOSX_BUNDLE_ICON_FILE "icon.icns"
+)

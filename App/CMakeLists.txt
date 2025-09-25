@@ -20,17 +20,17 @@ if(APPLE)
 endif()
 
 find_package(Qt6 ${QT_MIN_VERSION} REQUIRED COMPONENTS Quick QuickControls2)
-find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS Kirigami2 I18n)
+find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS Kirigami I18n)
 find_package(KF6KirigamiPlatform ${KF_MIN_VERSION} REQUIRED)
 
 qt_standard_project_setup(REQUIRES ${QT_MIN_VERSION})
 
-qt_add_executable(painterforunix
-    main.cpp
+qt_add_executable(Vincent
+        main.cpp
 )
 
-qt_add_qml_module(painterforunix
-    URI PainterForUNIX
+qt_add_qml_module(Vincent
+    URI Vincent
     VERSION 1.0
     QML_FILES
         qml/Main.qml
@@ -38,8 +38,6 @@ qt_add_qml_module(painterforunix
         qml/CanvasToolBar.qml
         qml/DrawingSurface.qml
 )
-
-qt_import_qml_plugins(painterforunix)
 
 if(APPLE)
     set(_sdk_gl "${CMAKE_OSX_SYSROOT}/System/Library/Frameworks/OpenGL.framework/Headers/gl.h")
@@ -58,12 +56,12 @@ endif()
 
 set(APPLE_SUPPRESS_X11_WARNING ON)
 
-target_link_libraries(painterforunix
+target_link_libraries(Vincent
     PRIVATE Qt6::Quick
             Qt6::QuickControls2
-            KF6::Kirigami2
+            KF6::Kirigami
             KF6::I18n
             KF6::KirigamiPlatform
 )
 
-install(TARGETS painterforunix ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS Vincent ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
