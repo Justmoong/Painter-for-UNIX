@@ -34,13 +34,9 @@ include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(FeatureSummary)
 
+set(VINCENT_BUNDLE_IDENTIFIER "com.example.vincent" CACHE STRING "Bundle identifier used for the Vincent macOS bundle")
+set(VINCENT_APP_ICON "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.icns" CACHE PATH "Path to the macOS .icns file used for the Vincent app bundle")
+
 add_subdirectory(App)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
-
-set(_APP_ICNS "${CMAKE_CURRENT_SOURCE_DIR}/resources/icon.icns")
-set_source_files_properties("${_APP_ICNS}" PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
-target_sources(Vincent PRIVATE "${_APP_ICNS}")
-set_target_properties(Vincent PROPERTIES
-        MACOSX_BUNDLE_ICON_FILE "icon.icns"
-)
