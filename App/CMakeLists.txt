@@ -50,24 +50,37 @@ qt_add_qml_module(Vincent
         qml/DrawingSurface.qml
 )
 
+# macOS bundle configuration
+set(VINCENT_BUNDLE_IDENTIFIER "com.iisacc.vincent" CACHE STRING "Bundle identifier used for the Vincent macOS bundle")
+set(VINCENT_APP_ICON "${CMAKE_SOURCE_DIR}/resources/icon.icns" CACHE FILEPATH "Path to .icns app icon")
+
 if(APPLE)
-    if(NOT EXISTS "${VINCENT_APP_ICON}")
-        message(FATAL_ERROR "VINCENT_APP_ICON points to '${VINCENT_APP_ICON}', but the file does not exist.")
+
+    get_filename_component(_vincent_icon_abs "${VINCENT_APP_ICON}" ABSOLUTE)
+    if(NOT EXISTS "${_vincent_icon_abs}")
+        message(FATAL_ERROR "VINCENT_APP_ICON points to '${_vincent_icon_abs}', but the file does not exist.")
     endif()
 
-    get_filename_component(_vincent_icon_name "${VINCENT_APP_ICON}" NAME)
+    get_filename_component(_vincent_icon_ext "${_vincent_icon_abs}" EXT)
+    if(NOT _vincent_icon_ext STREQUAL ".icns")
+        message(FATAL_ERROR "VINCENT_APP_ICON must be a .icns file. Given: '${_vincent_icon_abs}'")
+    endif()
 
-    set_source_files_properties("${VINCENT_APP_ICON}" PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
-    target_sources(Vincent PRIVATE "${VINCENT_APP_ICON}")
+    get_filename_component(_vincent_icon_name_we "${_vincent_icon_abs}" NAME_WE)
+
+    target_sources(Vincent PRIVATE "${_vincent_icon_abs}")
+    set_source_files_properties("${_vincent_icon_abs}" PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
     set_target_properties(Vincent PROPERTIES
             MACOSX_BUNDLE TRUE
-            MACOSX_BUNDLE_ICON_FILE "${_vincent_icon_name}"
+            MACOSX_BUNDLE_ICON_FILE "${_vincent_icon_name_we}"
             MACOSX_BUNDLE_GUI_IDENTIFIER "${VINCENT_BUNDLE_IDENTIFIER}"
             MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
             MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
     )
+endif()
 
+if(APPLE)
     set(_sdk_gl "${CMAKE_OSX_SYSROOT}/System/Library/Frameworks/OpenGL.framework/Headers/gl.h")
     if(EXISTS "${_sdk_gl}")
         message(STATUS "OpenGL.h in SDK: YES -> ${_sdk_gl}")
@@ -87,9 +100,13 @@ set(APPLE_SUPPRESS_X11_WARNING ON)
 target_link_libraries(Vincent
     PRIVATE Qt6::Quick
             Qt6::QuickControls2
-            KF6::Kirigami
-            KF6::I18n
-            KF6::KirigamiPlatform
+)
+
+target_link_libraries(Vincent
+        PRIVATE
+        KF6::Kirigami
+        KF6::I18n
+        KF6::KirigamiPlatform
 )
 
 qt_finalize_executable(Vincent)

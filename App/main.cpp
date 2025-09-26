@@ -1,6 +1,7 @@
 #include <QDir>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QIcon>
 
 extern "C" void mac_unifyTitlebar(QWindow *qw);
 
@@ -10,6 +11,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     const auto craftRoot = QString::fromLocal8Bit(qgetenv("CRAFTROOT"));
+
     if (!craftRoot.isEmpty()) {
         const QStringList candidateImportPaths = {
             craftRoot + QStringLiteral("/qml"),
