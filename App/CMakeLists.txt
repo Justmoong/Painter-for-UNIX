@@ -71,12 +71,18 @@ if(APPLE)
     target_sources(Vincent PRIVATE "${_vincent_icon_abs}")
     set_source_files_properties("${_vincent_icon_abs}" PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
+    set(VINCENT_ENTITLEMENTS "${CMAKE_CURRENT_LIST_DIR}/mac/Vincent.entitlements")
     set_target_properties(Vincent PROPERTIES
             MACOSX_BUNDLE TRUE
             MACOSX_BUNDLE_ICON_FILE "${_vincent_icon_name_we}"
             MACOSX_BUNDLE_GUI_IDENTIFIER "${VINCENT_BUNDLE_IDENTIFIER}"
             MACOSX_BUNDLE_BUNDLE_VERSION "${PROJECT_VERSION}"
             MACOSX_BUNDLE_SHORT_VERSION_STRING "${PROJECT_VERSION}"
+            XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS "${CMAKE_SOURCE_DIR}/mac/Vincent.entitlements"
+            XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.iisacc.vincent"
+            XCODE_ATTRIBUTE_DEVELOPMENT_TEAM "MUYEONG YUN"
+            XCODE_ATTRIBUTE_CODE_SIGN_STYLE "Automatic"
+            XCODE_ATTRIBUTE_SKIP_INSTALL "NO"
     )
 endif()
 
@@ -110,5 +116,47 @@ target_link_libraries(Vincent
 )
 
 qt_finalize_executable(Vincent)
+
+if(APPLE)
+    option(VINCENT_ENABLE_MACDEPLOYQT "Run macdeployqt for the Vincent bundle" ON)
+
+    if(VINCENT_ENABLE_MACDEPLOYQT)
+        set(_vincent_qml_dir "${CMAKE_CURRENT_SOURCE_DIR}/qml")
+
+        find_program(VINCENT_MACDEPLOYQT_EXECUTABLE
+            NAMES macdeployqt
+            HINTS
+                "${QT6_INSTALL_PREFIX}/bin"
+                "$ENV{QTDIR}/bin"
+                "$ENV{Qt6_DIR}/../../../bin"
+                "$ENV{Qt6_DIR}/../../bin"
+                "/usr/local/opt/qt/bin"
+                "/opt/homebrew/opt/qt/bin"
+            PATH_SUFFIXES bin
+        )
+
+        if(VINCENT_MACDEPLOYQT_EXECUTABLE)
+            add_custom_target(Vincent_macdeployqt
+                COMMAND "${VINCENT_MACDEPLOYQT_EXECUTABLE}" "$<TARGET_BUNDLE_DIR:Vincent>"
+                        "-qmldir=${_vincent_qml_dir}" "-always-overwrite" "-verbose=1"
+                DEPENDS Vincent
+                COMMENT "Deploying Vincent.app with macdeployqt"
+                VERBATIM
+            )
+            set_property(TARGET Vincent_macdeployqt PROPERTY FOLDER "Deployment")
+
+            if(CMAKE_GENERATOR MATCHES "Xcode")
+                add_custom_command(TARGET Vincent POST_BUILD
+                    COMMAND "${VINCENT_MACDEPLOYQT_EXECUTABLE}" "$<TARGET_BUNDLE_DIR:Vincent>"
+                            "-qmldir=${_vincent_qml_dir}" "-always-overwrite" "-verbose=1"
+                    COMMENT "Running macdeployqt after Xcode build"
+                    VERBATIM
+                )
+            endif()
+        else()
+            message(WARNING "macdeployqt executable not found; macOS deployment target will be unavailable.")
+        endif()
+    endif()
+endif()
 
 install(TARGETS Vincent ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
